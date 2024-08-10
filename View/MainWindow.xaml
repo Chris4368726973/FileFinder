@@ -21,9 +21,35 @@
 
         <!-- Input -->
         <TextBlock Grid.Row="0" FontSize="14">Search in Path:</TextBlock>
-        <TextBox Grid.Row="1" x:Name="textBox_SearchPath" Height="20" Margin="0,5,0,5" FontSize="14" Text="{Binding SearchPath}"/>
+        <TextBox Grid.Row="1" x:Name="textBox_SearchPath" Height="20" Margin="0,5,0,5" FontSize="14" Text="{Binding SearchPath}" BorderThickness="2">
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SearchPathIsValid}" Value="True">
+                            <Setter Property="BorderBrush" Value="Green"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SearchPathIsValid}" Value="False">
+                            <Setter Property="BorderBrush" Value="Red"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
         <TextBlock Grid.Row="2" FontSize="14">Text to search:</TextBlock>
-        <TextBox Grid.Row="3" x:Name="textBox_SearchText" Height="20" Margin="0,5,0,5" FontSize="14" Text="{Binding SearchText}"/>
+        <TextBox Grid.Row="3" x:Name="textBox_SearchText" Height="20" Margin="0,5,0,5" FontSize="14" Text="{Binding SearchText}" BorderThickness="2">
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SearchTextIsValid}" Value="True">
+                            <Setter Property="BorderBrush" Value="Green"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SearchTextIsValid}" Value="False">
+                            <Setter Property="BorderBrush" Value="Red"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
         <Button Grid.Row="4" x:Name="button_Search" Height="25" Margin="0,5,0,5" FontSize="14" Command="{Binding SearchCommand}">Search</Button>
 
         <ListView Grid.Row="5" Name="list_SearchResults" ItemsSource="{Binding SearchResults}">
