@@ -12,8 +12,8 @@ namespace FileFinder
     {
 
         public ObservableCollection<SearchResult> SearchResults { get; set; }
-
-        string searchPath;
+      
+        string searchPath;     
         public string SearchPath {
             get => searchPath;
             set {        
@@ -21,7 +21,22 @@ namespace FileFinder
                 {
                     searchPath = value;
                     this.SearchCommand.RaiseCanExecuteChanged();
+                    SearchPathIsValid = FileService.PathisValid(SearchPath);
                 }            
+            }
+        }
+
+        bool searchPathIsValid;
+        public bool SearchPathIsValid
+        {
+            get => searchPathIsValid;
+            set
+            {
+                if (searchPathIsValid != value)
+                {
+                    searchPathIsValid = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(searchPathIsValid)));
+                }
             }
         }
 
@@ -33,6 +48,21 @@ namespace FileFinder
                 {
                     searchText = value;                  
                     this.SearchCommand.RaiseCanExecuteChanged();
+                    SearchTextIsValid = !String.IsNullOrEmpty(SearchText);
+                }
+            }
+        }
+
+        bool searchTextIsValid;
+        public bool SearchTextIsValid
+        {
+            get => searchTextIsValid;
+            set
+            {
+                if (searchTextIsValid != value)
+                {
+                    searchTextIsValid = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(searchTextIsValid)));
                 }
             }
         }
@@ -43,7 +73,7 @@ namespace FileFinder
         {
 
             this.SearchCommand = new DelegateCommand(
-                (o) => !String.IsNullOrEmpty(SearchPath) && !String.IsNullOrEmpty(SearchText),
+                (o) => FileService.PathisValid(SearchPath) && !String.IsNullOrEmpty(SearchText),
                 (o) => { SearchFiles(); }
             );
 
