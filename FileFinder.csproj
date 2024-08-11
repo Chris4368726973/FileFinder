@@ -82,6 +82,7 @@
     <Compile Include="Helper\FileSearcher.cs" />
     <Compile Include="Helper\TextInContentFinder.cs" />
     <Compile Include="Model\FileObject.cs" />
+    <Compile Include="Model\Filter.cs" />
     <Compile Include="Model\SearchResult.cs" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="View\MainWindow.xaml.cs">

@@ -25,9 +25,18 @@ namespace FileFinder
 
         }
 
-        public static List<FileObject> GetFiles(string directoryPath)
+        public static List<FileObject> GetFiles(string directoryPath, bool searchSubfolders)
         {
             List<FileObject> fileObjects = new List<FileObject>();
+
+            GetFilesFromDirectory(directoryPath, fileObjects, searchSubfolders);
+
+            return fileObjects;
+
+        }
+
+        private static void GetFilesFromDirectory(string directoryPath, List<FileObject> fileObjects, bool searchSubfolders)
+        {
 
             FileInfo fileInfo;
 
@@ -36,18 +45,32 @@ namespace FileFinder
             foreach (string filePath in filePaths)
             {
 
-                try { 
+                try
+                {
 
                     fileInfo = new FileInfo(filePath);
-                    fileObjects.Add(new FileObject { Name = fileInfo.Name, FilePath = fileInfo.FullName, FileSize = fileInfo.Length, Content=File.ReadAllText(filePath) });
+                    fileObjects.Add(new FileObject { Name = fileInfo.Name, FilePath = fileInfo.FullName, FileSize = fileInfo.Length, Content = File.ReadAllText(filePath) });
 
-                } catch {
+                }
+                catch
+                {
 
                 }
 
             }
 
-            return fileObjects;
+            if (searchSubfolders)
+            {
+                string[] subfolders = Directory.GetDirectories(directoryPath);
+
+                foreach(string subfolder in subfolders)
+                {
+
+                    GetFilesFromDirectory(subfolder, fileObjects, searchSubfolders);
+
+                }
+
+            }
 
         }
 

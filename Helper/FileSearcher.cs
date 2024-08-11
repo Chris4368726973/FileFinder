@@ -20,7 +20,7 @@ namespace FileFinder
 
             Regex regex = new Regex(Regex.Escape(textToSearch), RegexOptions.IgnoreCase);
 
-            List<FileObject> fileObjects = FileService.GetFiles(pathToSearch);
+            List<FileObject> fileObjects = FileService.GetFiles(pathToSearch, true);
 
             Parallel.ForEach(fileObjects, fileObject =>
             {
