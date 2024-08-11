@@ -67,8 +67,6 @@ namespace FileFinder
             }
         }
 
-        public Filter Filter { get; set; }
-
         bool filterPopupOpen;
         public bool FilterPopupOpen
         {
@@ -79,6 +77,48 @@ namespace FileFinder
                 {
                     filterPopupOpen = value;
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(filterPopupOpen)));
+                }
+            }
+        }
+
+        public Filter Filter { get; set; }
+
+        public bool FilterSearchSubfolders
+        {
+            get => Filter.SearchSubfolders;
+            set
+            {
+                if (Filter.SearchAllFiletypes != value)
+                {
+                    Filter.SearchAllFiletypes = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSearchSubfolders)));
+                }
+            }
+        }
+
+        public bool FilterSearchAllFiletypes
+        {
+            get => Filter.SearchAllFiletypes;
+            set
+            {
+                if (FilterSearchAllFiletypes != value)
+                {
+                    Filter.SearchAllFiletypes = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSearchSpecificFiletypes)));
+                }
+
+            }
+        }
+
+        public bool FilterSearchSpecificFiletypes
+        {
+            get => !Filter.SearchAllFiletypes;
+            set
+            {
+                if (FilterSearchSpecificFiletypes != value)
+                {
+                    Filter.SearchAllFiletypes = !value;                  
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSearchAllFiletypes)));
                 }
             }
         }
