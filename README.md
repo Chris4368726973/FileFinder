@@ -1,14 +1,18 @@
 # FileFinder
 
-FileFinder is a tool I'm developing to search for a specific text (regex) within text files in a given directory. While there are faster and better solutions out there, I'm customizing this program to meet my needs while learning about MVVM ;)
+FileFinder is a tool I'm developing to search for one or more files within a given directory. While there are faster and better solutions out there, I'm customizing this program to meet my needs while learning about MVVM ;)
 
-# (Planned) Features
+# Features
 
+- **Search for files based on a specific text included in the files**
 - **Parallelization of the search process**
 - **Filtering options**
   - Include/exclude subfolders
-  - Search by specific file types
-  - Search by specific file names
+  - Include only specific file types
+
+# Planned Features
+
+- **Search for files based on filenames**
 - **Actions on the search results**
   - Open
   - Copy
