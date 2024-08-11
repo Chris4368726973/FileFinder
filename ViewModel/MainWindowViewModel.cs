@@ -88,9 +88,9 @@ namespace FileFinder
             get => Filter.SearchSubfolders;
             set
             {
-                if (Filter.SearchAllFiletypes != value)
+                if (Filter.SearchSubfolders != value)
                 {
-                    Filter.SearchAllFiletypes = value;
+                    Filter.SearchSubfolders = value;
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSearchSubfolders)));
                 }
             }
