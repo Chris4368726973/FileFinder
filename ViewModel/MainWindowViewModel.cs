@@ -12,7 +12,7 @@ namespace FileFinder
     {
 
         public ObservableCollection<SearchResult> SearchResults { get; set; }
-      
+
         string searchPath;     
         public string SearchPath {
             get => searchPath;
@@ -67,21 +67,85 @@ namespace FileFinder
             }
         }
 
+        bool filterPopupOpen;
+        public bool FilterPopupOpen
+        {
+            get => filterPopupOpen;
+            set
+            {
+                if (filterPopupOpen != value)
+                {
+                    filterPopupOpen = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(filterPopupOpen)));
+                }
+            }
+        }
+
+        public Filter Filter { get; set; }
+
+        public bool FilterSearchSubfolders
+        {
+            get => Filter.SearchSubfolders;
+            set
+            {
+                if (Filter.SearchSubfolders != value)
+                {
+                    Filter.SearchSubfolders = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSearchSubfolders)));
+                }
+            }
+        }
+
+        public bool FilterSearchAllFiletypes
+        {
+            get => Filter.SearchAllFiletypes;
+            set
+            {
+                if (FilterSearchAllFiletypes != value)
+                {
+                    Filter.SearchAllFiletypes = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSearchSpecificFiletypes)));
+                }
+
+            }
+        }
+
+        public bool FilterSearchSpecificFiletypes
+        {
+            get => !Filter.SearchAllFiletypes;
+            set
+            {
+                if (FilterSearchSpecificFiletypes != value)
+                {
+                    Filter.SearchAllFiletypes = !value;                  
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSearchAllFiletypes)));
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSearchSpecificFiletypes)));
+                }
+            }
+        }
+
+        public DelegateCommand OpenFilterPopupCommand { get; set; }
+
+        public DelegateCommand CloseFilterPopupCommand { get; set; }
+
         public DelegateCommand SearchCommand { get; set; }
 
         public MainWindowViewModel()
         {
+            this.Filter = new Filter { SearchSubfolders=true, SearchAllFiletypes=true, Filetypes=".txt;" };
 
             this.SearchCommand = new DelegateCommand(
                 (o) => FileService.PathisValid(SearchPath) && !String.IsNullOrEmpty(SearchText),
                 (o) => { SearchFiles(); }
             );
 
+            this.OpenFilterPopupCommand = new DelegateCommand((o) => { FilterPopupOpen = true; });
+            this.CloseFilterPopupCommand = new DelegateCommand((o) => { FilterPopupOpen = false; });
         }      
 
         public void SearchFiles()
         {
-            SearchResults = FileSearcher.SearchFiles(searchText, searchPath);
+            SearchResults = FileSearcher.SearchFiles(searchText, searchPath, Filter);
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
 

@@ -14,13 +14,13 @@ namespace FileFinder
 
         private static readonly object LockObject = new object();
 
-        public static ObservableCollection<SearchResult> SearchFiles(string textToSearch, string pathToSearch)
+        public static ObservableCollection<SearchResult> SearchFiles(string textToSearch, string pathToSearch, Filter filter)
         {
             ObservableCollection<SearchResult> searchResults = new ObservableCollection<SearchResult>();
 
             Regex regex = new Regex(Regex.Escape(textToSearch), RegexOptions.IgnoreCase);
 
-            List<FileObject> fileObjects = FileService.GetFiles(pathToSearch);
+            List<FileObject> fileObjects = FileService.GetFiles(pathToSearch, filter);
 
             Parallel.ForEach(fileObjects, fileObject =>
             {
