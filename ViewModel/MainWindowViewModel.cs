@@ -119,6 +119,7 @@ namespace FileFinder
                 {
                     Filter.SearchAllFiletypes = !value;                  
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSearchAllFiletypes)));
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterSearchSpecificFiletypes)));
                 }
             }
         }

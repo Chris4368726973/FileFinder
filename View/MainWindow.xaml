@@ -73,7 +73,21 @@
 
                         <CheckBox x:Name="filter_SearchSpecificFiletypes" Height="20" Margin="5,0,5,0" IsChecked="{Binding FilterSearchSpecificFiletypes}">Search specific filetypes</CheckBox>
 
-                        <TextBox x:Name="filter_Filetypes" Margin="5,0,5,0" FontSize="14" BorderThickness="2" Text="{Binding Filter.Filetypes}"/>
+                        <TextBox x:Name="filter_Filetypes" Margin="5,0,5,0" FontSize="14" BorderThickness="2" Text="{Binding Filter.Filetypes}">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding FilterSearchSpecificFiletypes}" Value="True">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding FilterSearchSpecificFiletypes}" Value="False">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                        
                         <TextBlock Margin="5,0,5,0" FontSize="10">";" separated List</TextBlock>
 
                         <Button x:Name="button_CloseFilterPopup" Margin="5,5,5,5" Command="{Binding CloseFilterPopupCommand}">Save</Button>
