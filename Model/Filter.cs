@@ -11,7 +11,18 @@ namespace FileFinder
 
         public bool SearchSubfolders { get; set; }
 
-        public List<string> Filetypes { get; set; }
+        public bool SearchAllFiletypes { get; set; }
+
+        public string Filetypes { get; set; }
+
+        public bool IsFiletypeIncluded(string filetype)
+        {
+            if (SearchAllFiletypes) { 
+                return true; 
+            } else {
+                return Filetypes.Contains(filetype + ";");
+            }
+        }
 
     }
 }

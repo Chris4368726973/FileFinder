@@ -25,17 +25,17 @@ namespace FileFinder
 
         }
 
-        public static List<FileObject> GetFiles(string directoryPath, bool searchSubfolders)
+        public static List<FileObject> GetFiles(string directoryPath, Filter filter)
         {
             List<FileObject> fileObjects = new List<FileObject>();
 
-            GetFilesFromDirectory(directoryPath, fileObjects, searchSubfolders);
+            GetFilesFromDirectory(directoryPath, fileObjects, filter);
 
             return fileObjects;
 
         }
 
-        private static void GetFilesFromDirectory(string directoryPath, List<FileObject> fileObjects, bool searchSubfolders)
+        private static void GetFilesFromDirectory(string directoryPath, List<FileObject> fileObjects, Filter filter)
         {
 
             FileInfo fileInfo;
@@ -49,8 +49,11 @@ namespace FileFinder
                 {
 
                     fileInfo = new FileInfo(filePath);
-                    fileObjects.Add(new FileObject { Name = fileInfo.Name, FilePath = fileInfo.FullName, FileSize = fileInfo.Length, Content = File.ReadAllText(filePath) });
 
+                    if (filter.IsFiletypeIncluded(fileInfo.Extension))
+                    {
+                        fileObjects.Add(new FileObject { Name = fileInfo.Name, FilePath = fileInfo.FullName, FileSize = fileInfo.Length, Content = File.ReadAllText(filePath) });
+                    }
                 }
                 catch
                 {
@@ -59,14 +62,14 @@ namespace FileFinder
 
             }
 
-            if (searchSubfolders)
+            if (filter.SearchSubfolders)
             {
                 string[] subfolders = Directory.GetDirectories(directoryPath);
 
                 foreach(string subfolder in subfolders)
                 {
 
-                    GetFilesFromDirectory(subfolder, fileObjects, searchSubfolders);
+                    GetFilesFromDirectory(subfolder, fileObjects, filter);
 
                 }
 
