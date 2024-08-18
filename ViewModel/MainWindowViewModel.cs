@@ -168,7 +168,7 @@ namespace FileFinder
                 if (file.Selected)
                 {
 
-                    FileService.OpenFile(file.Pfad);
+                    FileService.OpenFile(file.Path);
 
                 }
                 

@@ -30,7 +30,7 @@ namespace FileFinder
                     lock (LockObject)
                     {
 
-                        searchResults.Add(new SearchResult { Name = fileObject.Name, Pfad = fileObject.FilePath, Selected = false });
+                        searchResults.Add(new SearchResult { Name = fileObject.Name, Path = fileObject.FilePath, Selected = false });
 
                     }
                     
