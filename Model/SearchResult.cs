@@ -10,6 +10,7 @@ namespace FileFinder
     {
         public string Name { get; set; }
         public string Pfad { get; set; }
+        public bool Selected { get; set; }
 
     }
 }

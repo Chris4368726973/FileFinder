@@ -130,6 +130,8 @@ namespace FileFinder
 
         public DelegateCommand SearchCommand { get; set; }
 
+        public DelegateCommand OpenSelectedFilesCommand { get; set; }
+
         public MainWindowViewModel()
         {
             this.Filter = new Filter { SearchSubfolders=true, SearchAllFiletypes=true, Filetypes=".txt;" };
@@ -141,6 +143,12 @@ namespace FileFinder
 
             this.OpenFilterPopupCommand = new DelegateCommand((o) => { FilterPopupOpen = true; });
             this.CloseFilterPopupCommand = new DelegateCommand((o) => { FilterPopupOpen = false; });
+
+            this.OpenSelectedFilesCommand = new DelegateCommand(
+                (o) => SearchResults?.Count > 0,
+                (o) => { OpenFiles(); }
+            );
+
         }      
 
         public void SearchFiles()
@@ -148,7 +156,23 @@ namespace FileFinder
             SearchResults = FileSearcher.SearchFiles(searchText, searchPath, Filter);
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
+            this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
 
+        }
+
+        public void OpenFiles()
+        {
+            foreach (var file in SearchResults)
+            {
+
+                if (file.Selected)
+                {
+
+                    FileService.OpenFile(file.Pfad);
+
+                }
+                
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

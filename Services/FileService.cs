@@ -77,6 +77,13 @@ namespace FileFinder
 
         }
 
+        public static void OpenFile(string filePath)
+        {
+
+            System.Diagnostics.Process.Start(filePath);
+
+        }
+
     }
 
 }

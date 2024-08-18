@@ -17,6 +17,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Input -->
@@ -101,22 +102,40 @@
         
         <Button Grid.Row="4" x:Name="button_Search" Height="25" Margin="0,5,0,5" FontSize="14" Command="{Binding SearchCommand}">Search</Button>
 
-        <ListView Grid.Row="5" Name="list_SearchResults" Margin="0,5,0,0" ItemsSource="{Binding SearchResults}">
+        <ListView Grid.Row="5" x:Name="list_SearchResults" Margin="0,5,0,5" ItemsSource="{Binding SearchResults}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel>
-                        <TextBlock>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Grid.Column="0" Width="20" VerticalAlignment="Center" Margin="5,0,5,0" IsChecked="{Binding Selected}"></CheckBox>
+                        
+                        <StackPanel Grid.Column="1">
+                            <TextBlock>
                             <Run Text="Name: " FontWeight="Bold"/>
                             <Run Text="{Binding Name}"/>
-                        </TextBlock>
-                        <TextBlock>
+                            </TextBlock>
+                            <TextBlock>
                             <Run Text="Pfad: " FontWeight="Bold"/>
                             <Run Text="{Binding Pfad}"/>
-                        </TextBlock>
-                    </StackPanel>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
+        <Grid Grid.Row="6" Margin="0,5,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.5*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" x:Name="button_OpenSelectedFiles" Margin="0,0,5,0" Command="{Binding OpenSelectedFilesCommand}">Open Selected Files</Button>
+
+        </Grid>
+        
     </Grid>
 </Window>
