@@ -5,16 +5,18 @@ FileFinder is a tool I'm developing to search for one or more files within a giv
 # Features
 
 - **Search for files based on a specific text included in the files**
+- **Search for files based on filenames**
 - **Parallelization of the search process**
+- **Actions on the search results**
+  - Open
+  - Copy
 - **Filtering options**
   - Include/exclude subfolders
   - Include only specific file types
 
 # Planned Features
 
-- **Search for files based on filenames**
-- **Actions on the search results**
-  - Open
-  - Copy
 - **Faster path selection** using a directory viewer
 - **Save and select previous search directories**
+- **Support for word files**
+
