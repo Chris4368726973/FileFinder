@@ -45,22 +45,9 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-                      
-            <TextBox Grid.Column="0" x:Name="textBox_SearchText" FontSize="14" Text="{Binding SearchText}" BorderThickness="2">
-                <TextBox.Style>
-                    <Style TargetType="TextBox">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding SearchTextIsValid}" Value="True">
-                                <Setter Property="BorderBrush" Value="Green"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding SearchTextIsValid}" Value="False">
-                                <Setter Property="BorderBrush" Value="Red"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
-            
+
+            <TextBox Grid.Column="0" x:Name="textBox_SearchText" FontSize="14" Text="{Binding SearchText}" BorderThickness="2"/>
+
             <Button Grid.Column="1" x:Name="button_OpenFilterPopup" Width="70" Margin="5,0,5,0" Command="{Binding OpenFilterPopupCommand}">Filter</Button>
 
             <Popup x:Name="popup_Filter" IsOpen="{Binding FilterPopupOpen}" PlacementTarget="{Binding ElementName=button_OpenFilterPopup}">

@@ -51,21 +51,6 @@ namespace FileFinder
                     searchText = value;                  
                     this.SearchFilecontentCommand.RaiseCanExecuteChanged();
                     this.SearchFilenameCommand.RaiseCanExecuteChanged();
-                    SearchTextIsValid = !String.IsNullOrEmpty(SearchText);
-                }
-            }
-        }
-
-        bool searchTextIsValid;
-        public bool SearchTextIsValid
-        {
-            get => searchTextIsValid;
-            set
-            {
-                if (searchTextIsValid != value)
-                {
-                    searchTextIsValid = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(searchTextIsValid)));
                 }
             }
         }
@@ -144,12 +129,12 @@ namespace FileFinder
             this.Filter = new Filter { SearchSubfolders=true, SearchAllFiletypes=true, Filetypes=".txt;" };
 
             this.SearchFilecontentCommand = new DelegateCommand(
-                (o) => FileService.PathisValid(SearchPath) && !String.IsNullOrEmpty(SearchText),
+                (o) => FileService.PathisValid(SearchPath),
                 (o) => { SearchFilesByFilecontent(); }
             );
 
             this.SearchFilenameCommand = new DelegateCommand(
-                (o) => FileService.PathisValid(SearchPath) && !String.IsNullOrEmpty(SearchText),
+                (o) => FileService.PathisValid(SearchPath),
                 (o) => { SearchFilesByFilename(); }
             );
 
