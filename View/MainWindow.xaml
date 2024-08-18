@@ -99,8 +99,18 @@
             </Popup>
 
         </Grid>
-        
-        <Button Grid.Row="4" x:Name="button_Search" Height="25" Margin="0,5,0,5" FontSize="14" Command="{Binding SearchCommand}">Search</Button>
+
+        <Grid Grid.Row="4" Margin="0,5,0,5" Height="23">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.5*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" x:Name="button_SearchFilecontent" Margin="0,0,5,0" FontSize="14" Command="{Binding SearchFilecontentCommand}">Search by Content</Button>
+            <Button Grid.Column="1" x:Name="button_SearchFilename" Margin="5,0,0,0" FontSize="14" Command="{Binding SearchFilenameCommand}">Search by Name</Button>
+
+        </Grid>
+              
 
         <ListView Grid.Row="5" x:Name="list_SearchResults" Margin="0,5,0,5" ItemsSource="{Binding SearchResults}">
             <ListView.ItemTemplate>
@@ -128,7 +138,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <Grid Grid.Row="6" Margin="0,5,0,0">
+        <Grid Grid.Row="6" Margin="0,5,0,0" Height="23">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.5*"/>
                 <ColumnDefinition Width="0.5*"/>

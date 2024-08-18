@@ -20,7 +20,8 @@ namespace FileFinder
                 if (searchPath != value)
                 {
                     searchPath = value;
-                    this.SearchCommand.RaiseCanExecuteChanged();
+                    this.SearchFilecontentCommand.RaiseCanExecuteChanged();
+                    this.SearchFilenameCommand.RaiseCanExecuteChanged();
                     SearchPathIsValid = FileService.PathisValid(SearchPath);
                 }            
             }
@@ -47,7 +48,8 @@ namespace FileFinder
                 if (searchText != value)
                 {
                     searchText = value;                  
-                    this.SearchCommand.RaiseCanExecuteChanged();
+                    this.SearchFilecontentCommand.RaiseCanExecuteChanged();
+                    this.SearchFilenameCommand.RaiseCanExecuteChanged();
                     SearchTextIsValid = !String.IsNullOrEmpty(SearchText);
                 }
             }
@@ -128,7 +130,9 @@ namespace FileFinder
 
         public DelegateCommand CloseFilterPopupCommand { get; set; }
 
-        public DelegateCommand SearchCommand { get; set; }
+        public DelegateCommand SearchFilecontentCommand { get; set; }
+
+        public DelegateCommand SearchFilenameCommand { get; set; }
 
         public DelegateCommand OpenSelectedFilesCommand { get; set; }
 
@@ -136,9 +140,14 @@ namespace FileFinder
         {
             this.Filter = new Filter { SearchSubfolders=true, SearchAllFiletypes=true, Filetypes=".txt;" };
 
-            this.SearchCommand = new DelegateCommand(
+            this.SearchFilecontentCommand = new DelegateCommand(
                 (o) => FileService.PathisValid(SearchPath) && !String.IsNullOrEmpty(SearchText),
-                (o) => { SearchFiles(); }
+                (o) => { SearchFilesByFilecontent(); }
+            );
+
+            this.SearchFilenameCommand = new DelegateCommand(
+                (o) => FileService.PathisValid(SearchPath) && !String.IsNullOrEmpty(SearchText),
+                (o) => { SearchFilesByFilename(); }
             );
 
             this.OpenFilterPopupCommand = new DelegateCommand((o) => { FilterPopupOpen = true; });
@@ -151,9 +160,18 @@ namespace FileFinder
 
         }      
 
-        public void SearchFiles()
+        public void SearchFilesByFilecontent()
         {
-            SearchResults = FileSearcher.SearchFiles(searchText, searchPath, Filter);
+            SearchResults = FileSearcher.SearchFilesByFilecontent(searchText, searchPath, Filter);
+
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
+            this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
+
+        }
+
+        public void SearchFilesByFilename()
+        {
+            SearchResults = FileSearcher.SearchFilesByFilename(searchText, searchPath, Filter);
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
             this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();

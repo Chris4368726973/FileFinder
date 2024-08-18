@@ -14,7 +14,7 @@ namespace FileFinder
 
         private static readonly object LockObject = new object();
 
-        public static ObservableCollection<SearchResult> SearchFiles(string textToSearch, string pathToSearch, Filter filter)
+        public static ObservableCollection<SearchResult> SearchFilesByFilecontent(string textToSearch, string pathToSearch, Filter filter)
         {
             ObservableCollection<SearchResult> searchResults = new ObservableCollection<SearchResult>();
 
@@ -25,7 +25,7 @@ namespace FileFinder
             Parallel.ForEach(fileObjects, fileObject =>
             {
 
-                if (TextInContentFinder.IsRegexInContent(regex, fileObject.Content))
+                if (regex.IsMatch(fileObject.Content))
                 {
                     lock (LockObject)
                     {
@@ -34,6 +34,35 @@ namespace FileFinder
 
                     }
                     
+                }
+
+            });
+
+            return searchResults;
+
+        }
+
+        public static ObservableCollection<SearchResult> SearchFilesByFilename(string textToSearch, string pathToSearch, Filter filter)
+        {
+
+            ObservableCollection<SearchResult> searchResults = new ObservableCollection<SearchResult>();
+
+            Regex regex = new Regex(Regex.Escape(textToSearch), RegexOptions.IgnoreCase);
+
+            List<FileObject> fileObjects = FileService.GetFiles(pathToSearch, filter);
+
+            Parallel.ForEach(fileObjects, fileObject =>
+            {
+
+                if (regex.IsMatch(fileObject.Name))
+                {
+                    lock (LockObject)
+                    {
+
+                        searchResults.Add(new SearchResult { Name = fileObject.Name, Path = fileObject.FilePath, Selected = false });
+
+                    }
+
                 }
 
             });

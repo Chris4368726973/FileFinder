@@ -80,7 +80,6 @@
     </Compile>
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Helper\FileSearcher.cs" />
-    <Compile Include="Helper\TextInContentFinder.cs" />
     <Compile Include="Model\FileObject.cs" />
     <Compile Include="Model\Filter.cs" />
     <Compile Include="Model\SearchResult.cs" />
