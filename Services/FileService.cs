@@ -77,6 +77,28 @@ namespace FileFinder
 
         }
 
+        public static void OpenFile(string filePath)
+        {
+
+            System.Diagnostics.Process.Start(filePath);
+
+        }
+
+        public static void MoveFile(string fileName, string filePath, string destinationPath)
+        {
+
+            try
+            {
+
+                File.Copy(filePath, destinationPath + @"\" + fileName);
+
+            } catch
+            {
+
+            }
+
+        }
+
     }
 
 }
