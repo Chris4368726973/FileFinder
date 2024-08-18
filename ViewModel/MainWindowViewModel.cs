@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileFinder;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -136,6 +137,8 @@ namespace FileFinder
 
         public DelegateCommand OpenSelectedFilesCommand { get; set; }
 
+        public DelegateCommand MoveSelectedFilesCommand { get; set; }
+
         public MainWindowViewModel()
         {
             this.Filter = new Filter { SearchSubfolders=true, SearchAllFiletypes=true, Filetypes=".txt;" };
@@ -158,6 +161,11 @@ namespace FileFinder
                 (o) => { OpenFiles(); }
             );
 
+            this.MoveSelectedFilesCommand = new DelegateCommand(
+                (o) => SearchResults?.Count > 0,
+                (o) => { MoveFiles(); }
+            );
+
         }      
 
         public void SearchFilesByFilecontent()
@@ -166,6 +174,7 @@ namespace FileFinder
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
             this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
+            this.MoveSelectedFilesCommand.RaiseCanExecuteChanged();
 
         }
 
@@ -175,6 +184,7 @@ namespace FileFinder
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
             this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
+            this.MoveSelectedFilesCommand.RaiseCanExecuteChanged();
 
         }
 
@@ -191,6 +201,27 @@ namespace FileFinder
                 }
                 
             }
+        }
+
+        public void MoveFiles()
+        {
+
+            String folderPath = FileDialog.OpenFileDialog();
+
+            SearchText = folderPath;
+
+            foreach (var file in SearchResults)
+            {
+
+                if (file.Selected)
+                {
+
+                    FileService.MoveFile(file.Name, file.Path, folderPath);
+
+                }            
+
+            }
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
