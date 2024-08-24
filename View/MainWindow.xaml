@@ -22,22 +22,32 @@
 
         <!-- Input -->
         <TextBlock Grid.Row="0" FontSize="14">Search in Path:</TextBlock>
+
+        <Grid Grid.Row="1" Margin="0,5,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
         
-        <TextBox Grid.Row="1" x:Name="textBox_SearchPath" Height="23" Margin="0,5,0,5" FontSize="14" Text="{Binding SearchPath}" BorderThickness="2">
-            <TextBox.Style>
-                <Style TargetType="TextBox">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding SearchPathIsValid}" Value="True">
-                            <Setter Property="BorderBrush" Value="Green"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding SearchPathIsValid}" Value="False">
-                            <Setter Property="BorderBrush" Value="Red"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBox.Style>
-        </TextBox>
-        
+            <TextBox Grid.Column="0" x:Name="textBox_SearchPath" Height="23" FontSize="14" Text="{Binding SearchPath}" BorderThickness="2">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SearchPathIsValid}" Value="True">
+                                <Setter Property="BorderBrush" Value="Green"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding SearchPathIsValid}" Value="False">
+                                <Setter Property="BorderBrush" Value="Red"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+
+            <Button Grid.Column="1" Width="70" Margin="5,0,5,0" Command="{Binding SelectSearchPathCommand}">Select</Button>
+
+        </Grid>
+
         <TextBlock Grid.Row="2" FontSize="14">Text to search:</TextBlock>
         
         <Grid Grid.Row="3" Margin="0,5,0,5" Height="23">

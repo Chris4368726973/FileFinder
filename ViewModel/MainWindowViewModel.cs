@@ -21,6 +21,9 @@ namespace FileFinder
                 if (searchPath != value)
                 {
                     searchPath = value;
+
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(searchPath)));
+
                     this.SearchFilecontentCommand.RaiseCanExecuteChanged();
                     this.SearchFilenameCommand.RaiseCanExecuteChanged();
                     SearchPathIsValid = FileService.PathisValid(SearchPath);
@@ -112,6 +115,8 @@ namespace FileFinder
             }
         }
 
+        public DelegateCommand SelectSearchPathCommand { get; set; }
+
         public DelegateCommand OpenFilterPopupCommand { get; set; }
 
         public DelegateCommand CloseFilterPopupCommand { get; set; }
@@ -127,6 +132,8 @@ namespace FileFinder
         public MainWindowViewModel()
         {
             this.Filter = new Filter { SearchSubfolders=true, SearchAllFiletypes=true, Filetypes=".txt;" };
+
+            this.SelectSearchPathCommand = new DelegateCommand((o) => { SearchPath = FileDialog.OpenFileDialog(); });
 
             this.SearchFilecontentCommand = new DelegateCommand(
                 (o) => FileService.PathisValid(SearchPath),
