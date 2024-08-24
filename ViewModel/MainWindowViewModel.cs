@@ -21,6 +21,9 @@ namespace FileFinder
                 if (searchPath != value)
                 {
                     searchPath = value;
+
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(searchPath)));
+
                     this.SearchFilecontentCommand.RaiseCanExecuteChanged();
                     this.SearchFilenameCommand.RaiseCanExecuteChanged();
                     SearchPathIsValid = FileService.PathisValid(SearchPath);
@@ -51,21 +54,6 @@ namespace FileFinder
                     searchText = value;                  
                     this.SearchFilecontentCommand.RaiseCanExecuteChanged();
                     this.SearchFilenameCommand.RaiseCanExecuteChanged();
-                    SearchTextIsValid = !String.IsNullOrEmpty(SearchText);
-                }
-            }
-        }
-
-        bool searchTextIsValid;
-        public bool SearchTextIsValid
-        {
-            get => searchTextIsValid;
-            set
-            {
-                if (searchTextIsValid != value)
-                {
-                    searchTextIsValid = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(searchTextIsValid)));
                 }
             }
         }
@@ -127,6 +115,8 @@ namespace FileFinder
             }
         }
 
+        public DelegateCommand SelectSearchPathCommand { get; set; }
+
         public DelegateCommand OpenFilterPopupCommand { get; set; }
 
         public DelegateCommand CloseFilterPopupCommand { get; set; }
@@ -137,19 +127,21 @@ namespace FileFinder
 
         public DelegateCommand OpenSelectedFilesCommand { get; set; }
 
-        public DelegateCommand MoveSelectedFilesCommand { get; set; }
+        public DelegateCommand CopySelectedFilesCommand { get; set; }
 
         public MainWindowViewModel()
         {
             this.Filter = new Filter { SearchSubfolders=true, SearchAllFiletypes=true, Filetypes=".txt;" };
 
+            this.SelectSearchPathCommand = new DelegateCommand((o) => { SearchPath = FileDialog.OpenFileDialog(); });
+
             this.SearchFilecontentCommand = new DelegateCommand(
-                (o) => FileService.PathisValid(SearchPath) && !String.IsNullOrEmpty(SearchText),
+                (o) => FileService.PathisValid(SearchPath),
                 (o) => { SearchFilesByFilecontent(); }
             );
 
             this.SearchFilenameCommand = new DelegateCommand(
-                (o) => FileService.PathisValid(SearchPath) && !String.IsNullOrEmpty(SearchText),
+                (o) => FileService.PathisValid(SearchPath),
                 (o) => { SearchFilesByFilename(); }
             );
 
@@ -158,12 +150,12 @@ namespace FileFinder
 
             this.OpenSelectedFilesCommand = new DelegateCommand(
                 (o) => SearchResults?.Count > 0,
-                (o) => { OpenFiles(); }
+                (o) => { OpenSelectedFiles(); }
             );
 
-            this.MoveSelectedFilesCommand = new DelegateCommand(
+            this.CopySelectedFilesCommand = new DelegateCommand(
                 (o) => SearchResults?.Count > 0,
-                (o) => { MoveFiles(); }
+                (o) => { CopySelectedFiles(); }
             );
 
         }      
@@ -174,7 +166,7 @@ namespace FileFinder
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
             this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
-            this.MoveSelectedFilesCommand.RaiseCanExecuteChanged();
+            this.CopySelectedFilesCommand.RaiseCanExecuteChanged();
 
         }
 
@@ -184,11 +176,11 @@ namespace FileFinder
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
             this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
-            this.MoveSelectedFilesCommand.RaiseCanExecuteChanged();
+            this.CopySelectedFilesCommand.RaiseCanExecuteChanged();
 
         }
 
-        public void OpenFiles()
+        public void OpenSelectedFiles()
         {
             foreach (var file in SearchResults)
             {
@@ -203,7 +195,7 @@ namespace FileFinder
             }
         }
 
-        public void MoveFiles()
+        public void CopySelectedFiles()
         {
 
             String folderPath = FileDialog.OpenFileDialog();
