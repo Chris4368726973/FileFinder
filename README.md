@@ -6,6 +6,7 @@ FileFinder is a tool I'm developing to search for one or more files within a giv
 
 - **Search for files based on a specific text included in the files**
 - **Search for files based on filenames**
+- **Faster search path selection** using a folder dialog
 - **Parallelization of the search process**
 - **Actions on the search results**
   - Open
@@ -16,7 +17,6 @@ FileFinder is a tool I'm developing to search for one or more files within a giv
 
 # Planned Features
 
-- **Faster path selection** using a directory viewer
 - **Save and select previous search directories**
 - **Support for word files**
 
