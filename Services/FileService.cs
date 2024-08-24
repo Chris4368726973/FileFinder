@@ -52,8 +52,9 @@ namespace FileFinder
 
                     if (filter.IsFiletypeIncluded(fileInfo.Extension))
                     {
-                        fileObjects.Add(new FileObject { Name = fileInfo.Name, FilePath = fileInfo.FullName, FileSize = fileInfo.Length, Content = File.ReadAllText(filePath) });
+                        fileObjects.Add(new FileObject { Name = fileInfo.Name, FilePath = fileInfo.FullName, FileSize = fileInfo.Length });
                     }
+
                 }
                 catch
                 {

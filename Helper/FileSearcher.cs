@@ -20,12 +20,10 @@ namespace FileFinder
 
             Regex regex = new Regex(Regex.Escape(textToSearch), RegexOptions.IgnoreCase);
 
-            List<FileObject> fileObjects = FileService.GetFiles(pathToSearch, filter);
-
-            Parallel.ForEach(fileObjects, fileObject =>
+            Parallel.ForEach(FileService.GetFiles(pathToSearch, filter), fileObject =>
             {
 
-                if (regex.IsMatch(fileObject.Content))
+                if (regex.IsMatch(FileService.GetFileContent(fileObject)))
                 {
                     lock (LockObject)
                     {
@@ -49,9 +47,7 @@ namespace FileFinder
 
             Regex regex = new Regex(Regex.Escape(textToSearch), RegexOptions.IgnoreCase);
 
-            List<FileObject> fileObjects = FileService.GetFiles(pathToSearch, filter);
-
-            Parallel.ForEach(fileObjects, fileObject =>
+            Parallel.ForEach(FileService.GetFiles(pathToSearch, filter), fileObject =>
             {
 
                 if (regex.IsMatch(fileObject.Name))
