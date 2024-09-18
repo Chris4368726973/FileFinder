@@ -72,6 +72,20 @@ namespace FileFinder
             }
         }
 
+        bool isSearching;
+        public bool IsSearching
+        {
+            get => isSearching;
+            set
+            {
+                if (isSearching != value)
+                {
+                    isSearching = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(isSearching)));
+                }
+            }
+        }
+
         public Filter Filter { get; set; }
 
         public bool FilterSearchSubfolders
@@ -142,7 +156,7 @@ namespace FileFinder
 
             this.SearchFilenameCommand = new DelegateCommand(
                 (o) => FileService.PathisValid(SearchPath),
-                (o) => { SearchFilesByFilename(); }
+                (o) => {  SearchFilesByFilename(); }
             );
 
             this.OpenFilterPopupCommand = new DelegateCommand((o) => { FilterPopupOpen = true; });
@@ -160,9 +174,27 @@ namespace FileFinder
 
         }      
 
-        public void SearchFilesByFilecontent()
+        public async void SearchFilesByFilecontent()
         {
-            SearchResults = FileSearcher.SearchFilesByFilecontent(searchText, searchPath, Filter);
+
+            if (SearchText?.Length > 0) {
+
+                IsSearching = true;        
+
+                await Task.Run(() =>
+                {
+
+                    SearchResults = FileSearcher.SearchFilesByFilecontent(searchText, searchPath, Filter);
+
+                });               
+
+                IsSearching = false;
+
+            } else {
+
+                SearchResults = new ObservableCollection<SearchResult>();
+
+            }
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
             this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
@@ -170,9 +202,28 @@ namespace FileFinder
 
         }
 
-        public void SearchFilesByFilename()
+        public async void SearchFilesByFilename()
         {
-            SearchResults = FileSearcher.SearchFilesByFilename(searchText, searchPath, Filter);
+
+            if (SearchText?.Length > 0)
+            {
+
+                IsSearching = true;
+
+                await Task.Run(() =>
+                {
+
+                    SearchResults = FileSearcher.SearchFilesByFilename(searchText, searchPath, Filter);
+
+                });                
+
+                IsSearching = false;
+
+            } else {
+
+                SearchResults = new ObservableCollection<SearchResult>();
+
+            }
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
             this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();

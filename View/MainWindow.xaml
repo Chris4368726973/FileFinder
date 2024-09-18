@@ -107,33 +107,62 @@
             <Button Grid.Column="1" x:Name="button_SearchFilename" Margin="5,0,0,0" FontSize="14" Command="{Binding SearchFilenameCommand}">Search by Name</Button>
 
         </Grid>
-              
 
-        <ListView Grid.Row="5" x:Name="list_SearchResults" Margin="0,5,0,5" ItemsSource="{Binding SearchResults}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="5" Margin="0,5,0,5">
 
-                        <CheckBox Grid.Column="0" Width="20" VerticalAlignment="Center" Margin="5,0,5,0" IsChecked="{Binding Selected}"></CheckBox>
-                        
-                        <StackPanel Grid.Column="1">
-                            <TextBlock>
-                            <Run Text="Name: " FontWeight="Bold"/>
-                            <Run Text="{Binding Name}"/>
-                            </TextBlock>
-                            <TextBlock>
-                            <Run Text="Pfad: " FontWeight="Bold"/>
-                            <Run Text="{Binding Path}"/>
-                            </TextBlock>
-                        </StackPanel>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            <TextBox Grid.Column="0" x:Name="textBox_isSearching" FontSize="14" Text="Die Suche läuft..." BorderThickness="2">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSearching}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSearching}" Value="False">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+
+            <ListView x:Name="list_SearchResults" Margin="0,5,0,5" ItemsSource="{Binding SearchResults}">
+                <ListView.Style>
+                    <Style TargetType="ListView">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSearching}" Value="True">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSearching}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.Style>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox Grid.Column="0" Width="20" VerticalAlignment="Center" Margin="5,0,5,0" IsChecked="{Binding Selected}"></CheckBox>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock>
+                                <Run Text="Name: " FontWeight="Bold"/>
+                                <Run Text="{Binding Name}"/>
+                                </TextBlock>
+                                <TextBlock>
+                                <Run Text="Pfad: " FontWeight="Bold"/>
+                                <Run Text="{Binding Path}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
 
         <Grid Grid.Row="6" Margin="0,5,0,0" Height="23">
             <Grid.ColumnDefinitions>
@@ -142,8 +171,7 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" x:Name="button_OpenSelectedFiles" Margin="0,0,5,0" Command="{Binding OpenSelectedFilesCommand}">Open Selected Files</Button>
             <Button Grid.Column="1" x:Name="button_MoveSelectedFiles" Margin="5,0,0,0" Command="{Binding CopySelectedFilesCommand}">Copy Selected Files</Button>
-            
-            
+                       
             
         </Grid>
         

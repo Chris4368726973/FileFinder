@@ -11,7 +11,6 @@ namespace FileFinder
         public string Name { get; set; }
         public string FilePath { get; set; }
         public long FileSize { get; set; }
-        public string Content { get; set; }
 
     }
 }

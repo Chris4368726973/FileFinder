@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace FileFinder
@@ -16,7 +17,9 @@ namespace FileFinder
 
                 content = File.ReadAllText(fileObject.FilePath);
 
-            } catch { 
+            } 
+            catch (Exception)
+            { 
             
             
             }
@@ -39,48 +42,62 @@ namespace FileFinder
         {
 
             FileInfo fileInfo;
-
-            string[] filePaths = Directory.GetFiles(directoryPath);
-
-            foreach (string filePath in filePaths)
+            
+            try
             {
 
-                try
+                string[] files = Directory.GetFiles(directoryPath);
+                foreach (string file in files)
                 {
 
-                    fileInfo = new FileInfo(filePath);
-
-                    if (filter.IsFiletypeIncluded(fileInfo.Extension))
+                    try
                     {
-                        fileObjects.Add(new FileObject { Name = fileInfo.Name, FilePath = fileInfo.FullName, FileSize = fileInfo.Length, Content = File.ReadAllText(filePath) });
+
+                        fileInfo = new FileInfo(file);
+
+                        if (filter.IsFiletypeIncluded(fileInfo.Extension))
+                        {
+                            fileObjects.Add(new FileObject { Name = fileInfo.Name, FilePath = fileInfo.FullName, FileSize = fileInfo.Length });
+                        }
+
                     }
+                    catch
+                    {
+
+                    }
+
                 }
-                catch
+
+                if (filter.SearchSubfolders)
                 {
+                    string[] subfolders = Directory.GetDirectories(directoryPath);
+
+                    foreach (string subfolder in subfolders)
+                    {
+                        GetFilesFromDirectory(subfolder, fileObjects, filter);
+                    }
 
                 }
 
-            }
-
-            if (filter.SearchSubfolders)
+            } 
+            catch (Exception) 
             {
-                string[] subfolders = Directory.GetDirectories(directoryPath);
 
-                foreach(string subfolder in subfolders)
-                {
-
-                    GetFilesFromDirectory(subfolder, fileObjects, filter);
-
-                }
-
-            }
+            }           
 
         }
 
         public static void OpenFile(string filePath)
         {
 
-            System.Diagnostics.Process.Start(filePath);
+            try
+            {
+                System.Diagnostics.Process.Start(filePath);
+            }
+            catch (Exception)
+            {
+
+            }
 
         }
 
@@ -89,10 +106,9 @@ namespace FileFinder
 
             try
             {
-
                 File.Copy(filePath, destinationPath + @"\" + fileName);
-
-            } catch
+            } 
+            catch (Exception)
             {
 
             }
