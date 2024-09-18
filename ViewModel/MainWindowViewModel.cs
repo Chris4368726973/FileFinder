@@ -177,38 +177,58 @@ namespace FileFinder
         public async void SearchFilesByFilecontent()
         {
 
-            IsSearching = true;
+            if (SearchText?.Length > 0) {
 
-            await Task.Run(() =>
-            {
+                IsSearching = true;        
 
-                SearchResults = FileSearcher.SearchFilesByFilecontent(searchText, searchPath, Filter);
+                await Task.Run(() =>
+                {
 
-            });
+                    SearchResults = FileSearcher.SearchFilesByFilecontent(searchText, searchPath, Filter);
+
+                });               
+
+                IsSearching = false;
+
+            } else {
+
+                SearchResults = new ObservableCollection<SearchResult>();
+
+            }
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
             this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
             this.CopySelectedFilesCommand.RaiseCanExecuteChanged();
 
-            IsSearching = false;
         }
 
         public async void SearchFilesByFilename()
         {
-            IsSearching = true;
 
-            await Task.Run(() =>
+            if (SearchText?.Length > 0)
             {
 
-                SearchResults = FileSearcher.SearchFilesByFilename(searchText, searchPath, Filter);
+                IsSearching = true;
 
-            });
+                await Task.Run(() =>
+                {
+
+                    SearchResults = FileSearcher.SearchFilesByFilename(searchText, searchPath, Filter);
+
+                });                
+
+                IsSearching = false;
+
+            } else {
+
+                SearchResults = new ObservableCollection<SearchResult>();
+
+            }
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
             this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
             this.CopySelectedFilesCommand.RaiseCanExecuteChanged();
 
-            IsSearching = false;
         }
 
         public void OpenSelectedFiles()
