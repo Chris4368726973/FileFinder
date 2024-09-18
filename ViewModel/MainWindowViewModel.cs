@@ -72,6 +72,20 @@ namespace FileFinder
             }
         }
 
+        bool isSearching;
+        public bool IsSearching
+        {
+            get => isSearching;
+            set
+            {
+                if (isSearching != value)
+                {
+                    isSearching = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(isSearching)));
+                }
+            }
+        }
+
         public Filter Filter { get; set; }
 
         public bool FilterSearchSubfolders
@@ -142,7 +156,7 @@ namespace FileFinder
 
             this.SearchFilenameCommand = new DelegateCommand(
                 (o) => FileService.PathisValid(SearchPath),
-                (o) => { SearchFilesByFilename(); }
+                (o) => {  SearchFilesByFilename(); }
             );
 
             this.OpenFilterPopupCommand = new DelegateCommand((o) => { FilterPopupOpen = true; });
@@ -160,24 +174,41 @@ namespace FileFinder
 
         }      
 
-        public void SearchFilesByFilecontent()
+        public async void SearchFilesByFilecontent()
         {
-            SearchResults = FileSearcher.SearchFilesByFilecontent(searchText, searchPath, Filter);
+
+            IsSearching = true;
+
+            await Task.Run(() =>
+            {
+
+                SearchResults = FileSearcher.SearchFilesByFilecontent(searchText, searchPath, Filter);
+
+            });
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
             this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
             this.CopySelectedFilesCommand.RaiseCanExecuteChanged();
 
+            IsSearching = false;
         }
 
-        public void SearchFilesByFilename()
+        public async void SearchFilesByFilename()
         {
-            SearchResults = FileSearcher.SearchFilesByFilename(searchText, searchPath, Filter);
+            IsSearching = true;
+
+            await Task.Run(() =>
+            {
+
+                SearchResults = FileSearcher.SearchFilesByFilename(searchText, searchPath, Filter);
+
+            });
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
             this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
             this.CopySelectedFilesCommand.RaiseCanExecuteChanged();
 
+            IsSearching = false;
         }
 
         public void OpenSelectedFiles()
