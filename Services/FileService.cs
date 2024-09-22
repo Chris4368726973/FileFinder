@@ -30,34 +30,29 @@ namespace FileFinder
 
         public static List<FileObject> GetFiles(string directoryPath, Filter filter)
         {
-            List<FileObject> fileObjects = new List<FileObject>();
 
-            GetFilesFromDirectory(directoryPath, fileObjects, filter);
+            var fileObjects = new List<FileObject>();
 
-            return fileObjects;
-
-        }
-
-        private static void GetFilesFromDirectory(string directoryPath, List<FileObject> fileObjects, Filter filter)
-        {
-
-            FileInfo fileInfo;
-            
             try
             {
 
-                string[] files = Directory.GetFiles(directoryPath);
-                foreach (string file in files)
+                foreach (var file in Directory.EnumerateFiles(directoryPath,"*",SearchOption.AllDirectories))
                 {
 
                     try
-                    {
+                    {                      
 
-                        fileInfo = new FileInfo(file);
-
-                        if (filter.IsFiletypeIncluded(fileInfo.Extension))
+                        if (filter.IsFiletypeIncluded(Path.GetExtension(file)))
                         {
-                            fileObjects.Add(new FileObject { Name = fileInfo.Name, FilePath = fileInfo.FullName, FileSize = fileInfo.Length });
+
+                            var fileInfo = new FileInfo(file);
+
+                            fileObjects.Add(new FileObject
+                            {
+                                Name = fileInfo.Name,
+                                FilePath = fileInfo.FullName,
+                                FileSize = fileInfo.Length
+                            });
                         }
 
                     }
@@ -66,26 +61,17 @@ namespace FileFinder
 
                     }
 
-                }
+                }             
 
-                if (filter.SearchSubfolders)
-                {
-                    string[] subfolders = Directory.GetDirectories(directoryPath);
-
-                    foreach (string subfolder in subfolders)
-                    {
-                        GetFilesFromDirectory(subfolder, fileObjects, filter);
-                    }
-
-                }
-
-            } 
-            catch (Exception) 
+            }
+            catch (Exception)
             {
 
-            }           
+            }
 
-        }
+            return fileObjects;
+
+        }   
 
         public static void OpenFile(string filePath)
         {

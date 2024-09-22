@@ -6,17 +6,16 @@ using System.Threading.Tasks;
 
 using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
+using System.Collections.Concurrent;
 
 namespace FileFinder
 {
     public static class FileSearcher
     {
 
-        private static readonly object LockObject = new object();
-
         public static ObservableCollection<SearchResult> SearchFilesByFilecontent(string textToSearch, string pathToSearch, Filter filter)
         {
-            ObservableCollection<SearchResult> searchResults = new ObservableCollection<SearchResult>();
+            var searchResults = new ConcurrentBag<SearchResult>();
 
             Regex regex = new Regex(Regex.Escape(textToSearch), RegexOptions.IgnoreCase);
 
@@ -25,25 +24,26 @@ namespace FileFinder
 
                 if (regex.IsMatch(FileService.GetFileContent(fileObject)))
                 {
-                    lock (LockObject)
+
+                    searchResults.Add(new SearchResult
                     {
+                        Name = fileObject.Name,
+                        Path = fileObject.FilePath,
+                        Selected = false
+                    });
 
-                        searchResults.Add(new SearchResult { Name = fileObject.Name, Path = fileObject.FilePath, Selected = false });
-
-                    }
-                    
                 }
 
             });
 
-            return searchResults;
+            return new ObservableCollection<SearchResult>(searchResults);
 
         }
 
         public static ObservableCollection<SearchResult> SearchFilesByFilename(string textToSearch, string pathToSearch, Filter filter)
         {
 
-            ObservableCollection<SearchResult> searchResults = new ObservableCollection<SearchResult>();
+            var searchResults = new ConcurrentBag<SearchResult>();
 
             Regex regex = new Regex(Regex.Escape(textToSearch), RegexOptions.IgnoreCase);
 
@@ -52,18 +52,17 @@ namespace FileFinder
 
                 if (regex.IsMatch(fileObject.Name))
                 {
-                    lock (LockObject)
+                    searchResults.Add(new SearchResult
                     {
-
-                        searchResults.Add(new SearchResult { Name = fileObject.Name, Path = fileObject.FilePath, Selected = false });
-
-                    }
-
+                        Name = fileObject.Name,
+                        Path = fileObject.FilePath,
+                        Selected = false
+                    });
                 }
 
             });
 
-            return searchResults;
+            return new ObservableCollection<SearchResult>(searchResults);
 
         }
 
