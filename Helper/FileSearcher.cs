@@ -15,6 +15,14 @@ namespace FileFinder
 
         public static ObservableCollection<SearchResult> SearchFilesByFilecontent(string textToSearch, string pathToSearch, Filter filter)
         {
+
+            if (textToSearch?.Length == 0)
+            {
+
+                return new ObservableCollection<SearchResult>();
+
+            }
+
             var searchResults = new ConcurrentBag<SearchResult>();
 
             Regex regex = new Regex(Regex.Escape(textToSearch), RegexOptions.IgnoreCase);
@@ -42,6 +50,13 @@ namespace FileFinder
 
         public static ObservableCollection<SearchResult> SearchFilesByFilename(string textToSearch, string pathToSearch, Filter filter)
         {
+
+            if (textToSearch?.Length == 0)
+            {
+
+                return new ObservableCollection<SearchResult>();
+
+            }
 
             var searchResults = new ConcurrentBag<SearchResult>();
 

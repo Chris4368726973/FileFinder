@@ -6,13 +6,36 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace FileFinder
 {
     class MainWindowViewModel : INotifyPropertyChanged
     {
 
-        public ObservableCollection<SearchResult> SearchResults { get; set; }
+        ObservableCollection<SearchResult> searchResults;
+        public ObservableCollection<SearchResult> SearchResults {
+            get => searchResults;
+            set {
+
+                searchResults = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
+
+                this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
+                this.CopySelectedFilesCommand.RaiseCanExecuteChanged();
+
+            }
+        }
+
+        ObservableCollection<string> savedSearchPaths;
+        public ObservableCollection<string> SavedSearchPaths {
+            get => savedSearchPaths;
+            set
+            {
+                savedSearchPaths = value;
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SavedSearchPaths)));
+            }
+        }
 
         string searchPath;     
         public string SearchPath {
@@ -22,8 +45,9 @@ namespace FileFinder
                 {
                     searchPath = value;
 
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(searchPath)));
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchPath)));
 
+                    this.SaveSearchPathCommand.RaiseCanExecuteChanged();
                     this.SearchFilecontentCommand.RaiseCanExecuteChanged();
                     this.SearchFilenameCommand.RaiseCanExecuteChanged();
                     SearchPathIsValid = FileService.PathisValid(SearchPath);
@@ -40,7 +64,7 @@ namespace FileFinder
                 if (searchPathIsValid != value)
                 {
                     searchPathIsValid = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(searchPathIsValid)));
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchPathIsValid)));
                 }
             }
         }
@@ -67,7 +91,7 @@ namespace FileFinder
                 if (filterPopupOpen != value)
                 {
                     filterPopupOpen = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(filterPopupOpen)));
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FilterPopupOpen)));
                 }
             }
         }
@@ -81,7 +105,7 @@ namespace FileFinder
                 if (isSearching != value)
                 {
                     isSearching = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(isSearching)));
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSearching)));
                 }
             }
         }
@@ -129,6 +153,8 @@ namespace FileFinder
             }
         }
 
+        public DelegateCommand SaveSearchPathCommand { get; set; }
+
         public DelegateCommand SelectSearchPathCommand { get; set; }
 
         public DelegateCommand OpenFilterPopupCommand { get; set; }
@@ -144,90 +170,61 @@ namespace FileFinder
         public DelegateCommand CopySelectedFilesCommand { get; set; }
 
         public MainWindowViewModel()
-        {
-            this.Filter = new Filter { SearchSubfolders=true, SearchAllFiletypes=true, Filetypes=".txt;" };
+        {            
 
-            this.SelectSearchPathCommand = new DelegateCommand((o) => { SearchPath = FileDialog.OpenFileDialog(); });
-
-            this.SearchFilecontentCommand = new DelegateCommand(
-                (o) => FileService.PathisValid(SearchPath),
-                (o) => { SearchFilesByFilecontent(); }
-            );
-
-            this.SearchFilenameCommand = new DelegateCommand(
-                (o) => FileService.PathisValid(SearchPath),
-                (o) => {  SearchFilesByFilename(); }
-            );
-
-            this.OpenFilterPopupCommand = new DelegateCommand((o) => { FilterPopupOpen = true; });
-            this.CloseFilterPopupCommand = new DelegateCommand((o) => { FilterPopupOpen = false; });
-
-            this.OpenSelectedFilesCommand = new DelegateCommand(
-                (o) => SearchResults?.Count > 0,
-                (o) => { OpenSelectedFiles(); }
-            );
-
-            this.CopySelectedFilesCommand = new DelegateCommand(
-                (o) => SearchResults?.Count > 0,
-                (o) => { CopySelectedFiles(); }
-            );
+            InitializeCommands();
+            InitializeFilter();
+            InitializeSettings();         
 
         }      
+
+        public void SaveSearchPath()
+        {
+
+            SavedSearchPaths.Add(SearchPath);
+            SettingsManager.SaveSettings(new Settings { SearchPaths = SavedSearchPaths });
+
+        }
 
         public async void SearchFilesByFilecontent()
         {
 
-            if (SearchText?.Length > 0) {
+            IsSearching = true;
 
-                IsSearching = true;        
+            var results = await Task.Run(() =>
+            {
 
-                await Task.Run(() =>
-                {
+                return FileSearcher.SearchFilesByFilecontent(searchText, searchPath, Filter);
 
-                    SearchResults = FileSearcher.SearchFilesByFilecontent(searchText, searchPath, Filter);
+            });
 
-                });               
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                SearchResults = results;
+            });
 
-                IsSearching = false;
-
-            } else {
-
-                SearchResults = new ObservableCollection<SearchResult>();
-
-            }
-
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
-            this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
-            this.CopySelectedFilesCommand.RaiseCanExecuteChanged();
+            IsSearching = false;
 
         }
 
         public async void SearchFilesByFilename()
         {
 
-            if (SearchText?.Length > 0)
+            IsSearching = true;
+
+            var results = await Task.Run(() =>
             {
 
-                IsSearching = true;
+                return FileSearcher.SearchFilesByFilename(searchText, searchPath, Filter);
 
-                await Task.Run(() =>
-                {
+            });
 
-                    SearchResults = FileSearcher.SearchFilesByFilename(searchText, searchPath, Filter);
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                SearchResults = results;
+            });
 
-                });                
-
-                IsSearching = false;
-
-            } else {
-
-                SearchResults = new ObservableCollection<SearchResult>();
-
-            }
-
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SearchResults)));
-            this.OpenSelectedFilesCommand.RaiseCanExecuteChanged();
-            this.CopySelectedFilesCommand.RaiseCanExecuteChanged();
+            IsSearching = false;         
 
         }
 
@@ -264,6 +261,63 @@ namespace FileFinder
                 }            
 
             }
+
+        }
+
+        private void InitializeCommands()
+        {
+
+            this.SaveSearchPathCommand = new DelegateCommand(
+                (o) => FileService.PathisValid(SearchPath),
+                (o) => { SaveSearchPath(); }
+            );
+
+            this.SelectSearchPathCommand = new DelegateCommand(
+                (o) => { SearchPath = FileDialog.OpenFileDialog(); 
+            });
+
+            this.SearchFilecontentCommand = new DelegateCommand(
+                (o) => FileService.PathisValid(SearchPath) && searchText?.Length > 0,
+                (o) => { SearchFilesByFilecontent(); }
+            );
+
+            this.SearchFilenameCommand = new DelegateCommand(
+                (o) => FileService.PathisValid(SearchPath) && searchText?.Length > 0,
+                (o) => { SearchFilesByFilename(); }
+            );
+
+            this.OpenFilterPopupCommand = new DelegateCommand(
+                (o) => { FilterPopupOpen = true; 
+            });
+            this.CloseFilterPopupCommand = new DelegateCommand(
+                (o) => { FilterPopupOpen = false; 
+            });
+
+            this.OpenSelectedFilesCommand = new DelegateCommand(
+                (o) => SearchResults?.Count > 0,
+                (o) => { OpenSelectedFiles(); }
+            );
+
+            this.CopySelectedFilesCommand = new DelegateCommand(
+                (o) => SearchResults?.Count > 0,
+                (o) => { CopySelectedFiles(); }
+            );
+
+        }
+
+        private void InitializeFilter()
+        {
+
+            this.Filter = new Filter { SearchSubfolders = true, SearchAllFiletypes = true, Filetypes = ".txt;" };
+
+        }
+
+        private void InitializeSettings()
+        {
+
+            var settings = SettingsManager.LoadSettings();
+
+            this.SavedSearchPaths = settings.SearchPaths;
 
         }
 

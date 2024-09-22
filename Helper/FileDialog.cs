@@ -13,9 +13,12 @@ namespace FileFinder
         public static string OpenFileDialog()
         {
 
-            var dialog = new VistaFolderBrowserDialog();
-            dialog.Description = "Select a folder";
-            dialog.UseDescriptionForTitle = true;
+            var dialog = new VistaFolderBrowserDialog
+            {
+                Description = "Select a folder",
+                UseDescriptionForTitle = true,
+
+            };
 
             bool? result = dialog.ShowDialog();
 
